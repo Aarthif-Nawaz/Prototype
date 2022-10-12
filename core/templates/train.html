@@ -1,0 +1,153 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Train Pix2Pix Type GAN {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% load static %}
+
+
+{% block content %}
+
+
+<!-- Header -->
+<div class="header bg-gradient-primary pb-8 pt-5 pt-md-4">
+  <div class="container-fluid">
+    <div class="header-body">
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid mt--8">
+  <div class="card bg-secondary shadow">
+    <div class="card-header bg-white border-0">
+      <div class="row align-items-center">
+        <div class="col-8">
+          <h3 class="mb-0">Train Pix2Pix GAN by using a NAS Searched Architecture as the Generator </h3>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <form method="post" id="search?_profile" enctype="multipart/form-data">
+        <h6 class="heading-small text-muted mb-4">Train The Segmentation GAN</h6>
+        <div class="pl">
+          <div class="row">
+            <div class="col-lg-3" style="display: flex; justify-content: center;  vertical-align: middle;">
+              <div class="form-group">
+                <label class="form-control-label" for="input-datasetname">Select Dataset</label>
+                <div class="dropdown">
+                  <select name="post_categories" class="filter-selectbox" style="font-size: 12pt;">
+                    {% for item in dataset_list %}
+                    <option value="{{ item }}"> {{ item }} </option>
+                    {% endfor %}
+
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-5" style="display: flex; justify-content: center;  vertical-align: middle;">
+              <div class="form-group">
+                <label class="form-control-label" for="input-datasetname"> Select U-Net Architecture </label>
+                <div class="dropdown">
+
+                  <select name="post_categories" class="filter-selectbox" style="font-size: 12pt;">
+                    {% for item in architecture_list %}
+                    <option value="{{ item }}"> {{ item }} </option>
+                    {% endfor %}
+
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-4" style="display: flex; justify-content: center;  vertical-align: middle;">
+              <!-- <div class="col-sm" style="display: flex; justify-content: center;  vertical-align: middle;"> -->
+                <form method="GET"  style="display: inline-block">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-success" name="btn-train_init" id="btn-train_init" class="btn btn-default">Start Training</button>
+                </form>
+                <form method="GET" style="display: inline-block">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger" name="btn-train_stop" id="btn-train_stop" class="btn btn-default">Stop Training</button>
+                </form>
+              <!-- </div> -->
+              <!-- <div class="col-sm" style="display: flex; justify-content: center;  vertical-align: middle;"> -->
+                <form method="POST">
+                  {% csrf_token %}
+                  <button type="submit" name="btn-tensorboard" id="btn-tensorboard" class="btn btn-warning" onclick=" window.open('http://localhost:6006', '_blank'); return false;">View Tensorboard
+                    </button>
+                </form>
+              <!-- </div> -->
+            </div>
+          </div>
+
+          <hr class="my-4" />
+          <div class="row">
+            <div class="col-sm" id="chart-live" style="width: 30vw; height: 60vh;"> </div>
+            <div class="col-sm" id="chart-live-dis"
+              style="width: 30vw; height: 60vh;">
+            </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    // catch the form's submit event
+
+    var i = setInterval(function () {
+
+      console.log("timmer call")
+      $.ajax({
+        data: $(this).serialize(), // get the form data
+        url: "{% url 'live' %}",
+        // on success
+        success: function (response) {
+
+          $("#chart-live").html(response)
+        },
+        // on error
+        error: function (response) {
+          // alert the error if any error occured
+          console.log(response.responseJSON.errors)
+        }
+      });
+
+
+      console.log("timmer call Discriminator")
+      $.ajax({
+        data: $(this).serialize(), // get the form data
+        url: "{% url 'livedis' %}",
+        // on success
+        success: function (response) {
+
+          console.log(response)
+          $("#chart-live-dis").html(response)
+        },
+        // on error
+        error: function (response) {
+          // alert the error if any error occured
+          console.log(response.responseJSON.errors)
+        }
+      });
+
+    }, 1000 * 5) //ten second 
+
+
+  });
+
+
+
+
+
+</script>
+
+{% endblock javascripts %}
