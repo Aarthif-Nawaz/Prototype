@@ -17,6 +17,8 @@ SimpleITK
 Pillow
 PyYAML
 plotly
+pandas
+graphviz
 opencv-python
 # pygraphviz
 # graphviz

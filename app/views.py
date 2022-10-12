@@ -51,7 +51,8 @@ y_value_dis = []
 media_folder = MEDIA_ROOT
 config_path = CONFIG_ROOT
 
-test_dir = " "
+#"C:\Users\Acer\Desktop\iSegmentor\app\logs\nasunet\train\cityscapes"
+test_dir = os.path.join
 zipname = " "
 epoch, train_discriminator_loss_meter, train_generator_loss_meter, train_pixel_loss, train_adversarial_loss_meter, pixAcc = 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
 test_pic_acc, test_mIoU = 0, 0
