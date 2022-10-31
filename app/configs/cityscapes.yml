@@ -56,5 +56,5 @@ training:
   multi_gpus: true
   n_workers: 2
   report_freq: 100
-  resume: app\logs\checkpint.pth.tar
+  resume: C:\Users\Acer\Desktop\iSegmentor\app\logs\checkpint.pth.tar
   val_batch_size: 1

@@ -16,6 +16,11 @@ warnings.filterwarnings("ignore")
 
 BASE_DIR = Path(__file__).parent
 
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+
+API_KEY = "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"
+
 class Alerter:
 
     def __init__(self):
@@ -29,20 +34,20 @@ class Alerter:
         print(email_list)
         COMMASPACE = ', '
 
-        msg = MIMEMultipart()
-        msg['Subject'] = 'Prototype'
-        msg['From'] = "shehan.apiit@gmail.com"
-        msg['To'] = COMMASPACE.join(email_list)
-        #print(msg)
-
-        message = MIMEText(html, 'plain')
-        msg.attach(message)
-
-        server = smtplib.SMTP('smtp.gmail.com', 587)
-        server.starttls()
-        server.login("shehan.apiit@gmail.com", "Prototype@1")
-        server.send_message(msg)
-        server.quit()
+        message = Mail(
+            from_email='watttdean@gmail.com',
+            to_emails=email_list,
+            subject='Prototype - Training',
+            html_content=f'<strong>{html}</strong>')
+        try:
+            sg = SendGridAPIClient(API_KEY)
+            response = sg.send(message)
+            print(response.status_code)
+            print(response.body)
+            print(response.headers)
+        except Exception as e:
+            response = e.message
+            print(e.message)
 
     # def main(self):
     #     print("Sending E-Mails... ")
